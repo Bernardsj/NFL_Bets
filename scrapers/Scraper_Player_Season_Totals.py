@@ -15,9 +15,9 @@ import numpy as np
 
 
 def player_legacy(start_year, end_year):
-    year = np.array(range(start_year, end_year))
+    years = np.array(range(start_year, end_year))
 
-    for yr in year:
+    for yr in years:
         # set up soup
         # string formatting to manipulate the url by a given year
         url = f"https://www.pro-football-reference.com/years/{yr}/fantasy.htm"
@@ -52,9 +52,9 @@ def player_legacy(start_year, end_year):
         player_stats_annual_yr['Year'] = yr
 
         # combine dfs
-        if yr == 2020:
+        if yr == start_year:
             player_stats_annual = player_stats_annual_yr
         else:
             player_stats_annual = pd.concat(
                 [player_stats_annual, player_stats_annual_yr], axis=0, join='outer')
-    return(player_stats_annual)
+    return player_stats_annual 
