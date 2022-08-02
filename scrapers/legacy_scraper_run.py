@@ -9,15 +9,9 @@
 # 2. Decide if two run scripts are needed (weekely and annual) or if I can build it into one file
 
 import numpy as np
-
-# Scrape season totals
-import Scrapers.Scraper_Player_Season_Totals as ps
-
-player_legacy_df = ps.player_legacy(2000, 2022)
-print(player_legacy_df.head())
-
-# Scrape data for each week
-import Scrapers.Scraper_Team_Stats_Rankings as ts
+import Scrapers.Scraper_Player_Season_Totals as ps # Scrape season totals
+import Scrapers.Scraper_Team_Stats_Rankings as ts # Scrape totals for each week
+import Scrapers.Scraper_legacy_odds as odds # Scrape totals for each week
 
 # Define team code
 team_codes = [
@@ -31,11 +25,15 @@ team_codes = [
    'ram', 'crd', 'sfo', 'sea'  # nfc west
 ]
 
-
 # Define years you wish to pull data from
-years = np.array(range(2000, 2020))
+years = np.array(range(2000, 2022))
 
 # Scrape Data
+player_fantsey_legacy_df = ps.player_legacy(years)
 team_game_legacy_df = ts.game_scrapper(team_codes, years)
+odds_line_legacy_df = odds.odds_scrapper(team_codes, years)
 
+# Figure out how to push to MySQL
+player_fantsey_legacy_df.to_csv("Data/Legacy Player Data_00-21.csv")
 team_game_legacy_df.to_csv("Data/Legacy Team Data_00-21.csv")
+odds_line_legacy_df.to_csv("Data/Odds_00-21.csv")

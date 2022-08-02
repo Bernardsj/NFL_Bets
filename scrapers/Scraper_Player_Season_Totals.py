@@ -14,8 +14,7 @@ import pandas as pd
 import numpy as np
 
 
-def player_legacy(start_year, end_year):
-    years = np.array(range(start_year, end_year))
+def player_legacy(years):
 
     for yr in years:
         # set up soup

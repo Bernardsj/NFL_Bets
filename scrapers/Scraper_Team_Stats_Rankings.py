@@ -1,5 +1,3 @@
-# To Do:
-# 2. Define loop to pull data from each team and each year
 # author: Jake Bernards
 
 # Install dependencies
@@ -45,7 +43,7 @@ def game_scrapper(team_codes, years):
 
                 # set home_away
                 game_log['Home_Away'] = np.where(
-                    game_log.Home_Away == "@", "Away", "Home")
+                    game_log.Home_Away == "@", "A", "H")
 
                 # Convert time of possession to min
                 game_log['Home_Time_of_possession_min'] = game_log.Home_Time_of_possession_min.apply(
