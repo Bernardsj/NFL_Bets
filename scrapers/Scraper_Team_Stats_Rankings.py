@@ -12,14 +12,12 @@ def game_scrapper(team_codes, years):
     for team in team_codes:
         for yr in years:
             try:
+                # Pull up team/year web pages
                 url = f"https://www.pro-football-reference.com/teams/{team}/{yr}/gamelog/"
                 html = urlopen(url)
                 soup = BeautifulSoup(html, features="lxml")
                 tables = soup.find_all('table')  # create list of tables
-            except: 
-                print(f"Error scraping https://www.pro-football-reference.com/teams/{team}/{yr}/gamelog/")
-
-            else:
+                
                 # Define headers
                 game_log_headers = ['Week', 'Day', 'Date', 'boxscore', 'Win_Loss', 'OT', 'Home_Away', 'Opponent',
                                     'Points_Scored', 'Points_Allowed', 'Pass_Complete', 'Pass_Attempt',
@@ -56,10 +54,16 @@ def game_scrapper(team_codes, years):
                 # Drop unwanted boxscore
                 game_log.drop(['boxscore'], axis = 1, inplace = True)
                 
-                # combine dfs
+            except ValueError:
+                print(f"Error scraping {team}: {yr}")
+
+            else:
+                # Create df is first call
                 if all([yr == min(years), team == team_codes[0]]):
                     team_game_stats = game_log
+                # combine dfs
                 else:
                     team_game_stats = pd.concat(
                         [team_game_stats, game_log], axis=0, join='outer')
+
     return team_game_stats
