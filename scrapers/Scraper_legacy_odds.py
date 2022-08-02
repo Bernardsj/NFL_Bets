@@ -15,7 +15,6 @@ def odds_scrapper(team_codes, years):
             try:
                 # Pull up team/year web pages
                 url = f"https://www.pro-football-reference.com/teams/{team}/{yr}_lines.htm"
-                #url = "https://www.pro-football-reference.com/teams/cin/2020_lines.htm"
                 html = urlopen(url)
                 soup = BeautifulSoup(html, features="lxml")
                 tables = soup.find_all('table')  # create list of tables
@@ -51,9 +50,9 @@ def odds_scrapper(team_codes, years):
                 conditions = [
                     bet_log.line_result == 'Won', 
                     bet_log.line_result == 'Lost',
-                    bet_log.line_result == 'Draw'
+                    bet_log.line_result == 'Push'
                 ]
-                values = ['W', 'L', 'T']
+                values = ['W', 'L', 'P']
 
                 bet_log['line_result'] = np.select(conditions, values)
 
@@ -68,16 +67,15 @@ def odds_scrapper(team_codes, years):
 
             except HTTPError:
                 print(f"HTTP Error scraping {team}: {yr}")
-
             else:
-                # Create df is first call
+                # Create df on first call
                 if all([yr == min(years), team == team_codes[0]]):
                     bet_log_archive = bet_log
+                
                 # combine dfs
                 else:
-                    bet_log = pd.concat(
+                    bet_log_archive = pd.concat(
                         [bet_log_archive, bet_log], axis=0, join='outer')
 
+                    print(f"Scraping: {team}/{yr}")
     return bet_log_archive
-
-
