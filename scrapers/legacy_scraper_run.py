@@ -22,7 +22,7 @@ team_codes = [
     'dal', 'phi', 'was', 'nyg',  # nfc east
     'gnb', 'min', 'chi', 'det',  # nfc north
     'tam', 'nor', 'atl', 'car',  # nfc south
-   'ram', 'crd', 'sfo', 'sea'  # nfc west
+    'ram', 'crd', 'sfo', 'sea'  # nfc west
 ]
 
 # Define years you wish to pull data from
@@ -33,7 +33,17 @@ player_fantsey_legacy_df = ps.player_legacy(years)
 team_game_legacy_df = ts.game_scrapper(team_codes, years)
 odds_line_legacy_df = odds.odds_scrapper(team_codes, years)
 
-# Figure out how to push to MySQL
+# Push data to MySQL database
+## Connect to DB
+import pymysql
+connection = pymysql.connect(host='localhost', user = 'root', password = 'eK5ERE<Sqv+j[0o', db = "nfl_bets")
+cursor = connection.cursor()
+
+# Push scraped data
+odds_line_legacy_df.to_sql(con = connection, name = 'vegas_odds', if_exists='append',index=False)
+cursor.execute('SELECT * FROM vegas_odds')
+
+# Save csv backup
 player_fantsey_legacy_df.to_csv("Data/Legacy Player Data_00-21.csv")
 team_game_legacy_df.to_csv("Data/Legacy Team Data_00-21.csv")
 odds_line_legacy_df.to_csv("Data/Odds_00-21.csv")
