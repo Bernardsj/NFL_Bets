@@ -35,13 +35,13 @@ odds_line_legacy_df = odds.odds_scrapper(team_codes, years)
 
 # Push data to MySQL database
 ## Connect to DB
-import pymysql
-connection = pymysql.connect(host='localhost', user = 'root', password = 'eK5ERE<Sqv+j[0o', db = "nfl_bets")
-cursor = connection.cursor()
+import sqlalchemy
+engine = create_engine("mysql://root:eK5ERE<Sqv+j[0o@localhost/nfl_bets")
 
 # Push scraped data
-odds_line_legacy_df.to_sql(con = connection, name = 'vegas_odds', if_exists='append',index=False)
-cursor.execute('SELECT * FROM vegas_odds')
+odds_line_legacy_df.to_sql(con = engine, name = 'vegas_odds', if_exists='append',index=False)
+
+# Check data was entered
 
 # Save csv backup
 player_fantsey_legacy_df.to_csv("Data/Legacy Player Data_00-21.csv")
