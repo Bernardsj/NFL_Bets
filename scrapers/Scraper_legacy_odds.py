@@ -32,7 +32,7 @@ def odds_scrapper(team_codes, years):
                 bet_log.columns = bet_log_headers
 
                 # define team and year
-                bet_log['team_code'] = team
+                bet_log['site_code'] = team
                 bet_log['year'] = yr
 
                 # set home_away

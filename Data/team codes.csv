@@ -1,0 +1,37 @@
+site_code,team_code,team_name,division
+buf,buf,Buffalo Bills,afc east
+new,new,New England Patriots,afc east
+mia,mia,Miami Dolphins,afc east
+nyj,nyj,New York Jets,afc east
+cin,cin,Cincinnati Bengals,afc north
+pit,pit,Pittsburgh Steelers,afc north
+cle,cle,Cleveland Browns,afc north
+rav,bal,Baltimore Ravens,afc north
+oti,ten,Tennessee Titans,afc south
+clt,ind,Indianapolis Colts,afc south
+htx,hou,Houston Texans,afc south
+jax,jax,Jacksonville Jaguars,afc south
+kan,kan,Kansas City Chiefs,afc west
+rai,lvr,Las Vegas Raiders,afc west
+rai,oak,Oakland Raiders,afc west
+sdg,sdg,San Diego Chargers,afc west
+sdg,lac,Los Angeles Chargers,afc west
+den,den,Denver Broncos,afc west
+dal,dal,Dallas Cowboys,nfc east
+phi,phi,Philadelphia Eagles,nfc east
+was,was,Washington Football Team,nfc east
+was,was,Washington Redskins,nfc east
+nyg,nyg,New York Giants,nfc east
+gnb,gnb,Green Bay Packers,nfc north
+min,min,Minnesota Vikings,nfc north
+chi,chi,Chicago Bears,nfc north
+det,det,Detroit Lions,nfc north
+tam,tam,Tampa Bay Buccaneers,nfc south
+nor,nor,New Orleans Saints,nfc south
+atl,atl,Atlanta Falcons,nfc south
+car,car,Carolina Panthers,nfc south
+ram,lar,Los Angeles Rams,nfc west
+ram,stl,St. Louis Rams,nfc west
+crd,ari,Arizona Cardinals,nfc west
+sfo,sfo,San Francisco 49ers,nfc west
+sea,sea,Seattle Seahawks,nfc west

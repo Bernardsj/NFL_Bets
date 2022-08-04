@@ -5,7 +5,6 @@
 
 
 # To Do:
-# 1. Set up mysql and push data there
 # 2. Decide if two run scripts are needed (weekely and annual) or if I can build it into one file
 
 import numpy as np
@@ -39,11 +38,12 @@ import sqlalchemy
 engine = create_engine("mysql://root:eK5ERE<Sqv+j[0o@localhost/nfl_bets")
 
 # Push scraped data
+player_fantsey_legacy_df.to_sql(con = engine, name = 'player_stats_annual', if_exists='append',index=False)
+team_game_legacy_df.to_sql(con = engine, name = 'team_stats_weekly', if_exists='append',index=False)
 odds_line_legacy_df.to_sql(con = engine, name = 'vegas_odds', if_exists='append',index=False)
-
-# Check data was entered
 
 # Save csv backup
 player_fantsey_legacy_df.to_csv("Data/Legacy Player Data_00-21.csv")
 team_game_legacy_df.to_csv("Data/Legacy Team Data_00-21.csv")
 odds_line_legacy_df.to_csv("Data/Odds_00-21.csv")
+

@@ -12,18 +12,19 @@ def game_scrapper(team_codes, years):
             try:
                 # Pull up team/year web pages
                 url = f"https://www.pro-football-reference.com/teams/{team}/{yr}/gamelog/"
+                url = f"https://www.pro-football-reference.com/teams/buf/2000/gamelog/"
                 html = urlopen(url)
                 soup = BeautifulSoup(html, features="lxml")
                 tables = soup.find_all('table')  # create list of tables
                 
                 # Define headers
-                game_log_headers = ['Week', 'Day', 'Date', 'boxscore', 'Win_Loss', 'OT', 'Home_Away', 'Opponent',
-                                    'Points_Scored', 'Points_Allowed', 'Pass_Complete', 'Pass_Attempt',
-                                    'Pass_Yds', 'Pass_TD', 'Pass_Int', 'Sacked', 'Sack_Yds', 'Yards_Per_Pass_Att',
-                                    'Net_Yds_Per_Pass_Att', 'Completion_Pct', 'QB_Rating', 'Rush_Att',
-                                    'Rush_Yds', 'Rush_Yds_Per_Att', 'Rush_TD', 'Field_Goal_Made', 'Field_Goal_Att',
-                                    'Extra_Point_Made', 'Extra_Point_Att', 'Punt', 'Punt_Yds', '3rd_Down_Conv',
-                                    '3rd_Down_Att', '4th_Down_Conv', '4th_Down_Att', 'Home_Time_of_possession_min']
+                game_log_headers = ['week', 'day_of_week', 'date', 'boxscore', 'win_loss', 'overtime', 'home_away', 'opponent',
+                                    'points_scored', 'points_allowed', 'pass_complete', 'pass_attempt',
+                                    'pass_yds', 'pass_td', 'pass_int', 'sacked', 'sack_yds', 'yards_per_pass_att',
+                                    'net_yds_per_pass_att', 'completion_pct', 'qb_rating', 'rush_att',
+                                    'rush_yds', 'rush_yds_per_att', 'rush_td', 'field_goal_made', 'field_goal_att',
+                                    'extra_point_made', 'extra_point_att', 'punt', 'punt_yds', 'thirddown_conv',
+                                    'thirddown_att', 'fourthdown_conv', 'fourthdown_att', 'home_time_of_possession_min']
 
                 # extract data - Game Logs
                 game_log = pd.read_html(str(tables), header=None)[0]
@@ -35,22 +36,26 @@ def game_scrapper(team_codes, years):
                 game_log.columns = game_log_headers
 
                 # define team and year
-                game_log['Team'] = team
-                game_log['Year'] = yr
+                game_log['site_code'] = 'buf'#rmteam
+                game_log['year'] = 2000#rm yr
 
                 # set OT Coding
-                game_log['OT'] = np.where(game_log.OT == 'OT', 1, 0)
+                game_log['overtime'] = np.where(game_log.overtime == 'OT', 1, 0)
 
                 # set home_away
-                game_log['Home_Away'] = np.where(
-                    game_log.Home_Away == "@", "A", "H")
+                game_log['home_away'] = np.where(
+                    game_log.home_away == "@", "A", "H")
 
                 # Convert time of possession to min
-                game_log['Home_Time_of_possession_min'] = game_log.Home_Time_of_possession_min.apply(
-                    lambda x: int(x[:-3]) * 60 + int(x[-2:]))
+                game_log['home_time_of_possession_min'] = game_log.home_time_of_possession_min.apply(
+                    lambda x: (int(x[:-3]) / 60) + int(x[-2:]))
 
                 # Drop unwanted boxscore
                 game_log.drop(['boxscore'], axis = 1, inplace = True)
+
+                # Convert date - need to figure out
+                f#rom dateutil.parser import parse
+                #game_log.['date'] = pd.to_datetime(parse(game_log.date + ", " + game_log.year.astype(str)))
                 
             except ValueError:
                 print(f"Error scraping {team}: {yr}")
