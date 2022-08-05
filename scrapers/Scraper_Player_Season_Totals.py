@@ -31,7 +31,7 @@ def player_legacy(years):
                    'pass_td', 'pass_int', 'rush_att', 'rush_yds',
                    'rush_yds_per_att', 'rush_td', 'pass_target',
                    'catches', 'catch_yds', 'catch_yds_per_att',
-                   'catch_td', 'fumbles_total', 'fumbels_lost',
+                   'catch_td', 'fumbles_total', 'fumbles_lost',
                    'td_total', 'twopoint_made', 'twopoint_pass',
                    'fantsey_points', 'ppr_points', 'draftking_points',
                    'fanduel_points', 'vbd_points', 'rank_position',
@@ -51,51 +51,26 @@ def player_legacy(years):
             '+', "", regex=False).str.replace('*', "", regex=False)
         player_stats_annual_yr['year'] = yr
 
+        # Update cols to push to mysqldb
+        update_cols = ['age', 'games_played', 'games_started',
+               'pass_completed', 'pass_attempt', 'pass_yds',
+               'pass_td', 'pass_int', 'rush_att', 'rush_yds',
+               'rush_yds_per_att', 'rush_td', 'pass_target',
+               'catches', 'catch_yds', 'catch_yds_per_att',
+               'catch_td', 'fumbles_total', 'fumbles_lost',
+               'td_total', 'twopoint_made', 'twopoint_pass',
+               'fantsey_points', 'ppr_points', 'draftking_points',
+               'fanduel_points', 'vbd_points', 'rank_position',
+                   'rank_total']
+
+        player_stats_annual_yr[update_cols] = player_stats_annual_yr[update_cols].apply(lambda x: pd.to_numeric(x, errors='coerce', downcast = 'integer').replace(np.nan, 0))
+
         # combine dfs
         if yr == years[0]:
             player_stats_annual = player_stats_annual_yr
         else:
             player_stats_annual = pd.concat(
                 [player_stats_annual, player_stats_annual_yr], axis=0, join='outer')
+
     return player_stats_annual 
 
-# Figure out how to wrap and apply in a function
-# follow this structor
-#cols = ['date1','date2']
-#df[cols] = df[cols].apply(pd.to_datetime)
-
-# Maybe: 
-# df[cols] = df[cols].apply(lambda x: pd.to_numeric(player_fantsey_legacy_df.x, errors='coerce', downcast = 'integer').replace(np.nan, 0))
-
-player_fantsey_legacy_df['twopoint_pass'] = pd.to_numeric(player_fantsey_legacy_df.twopoint_pass, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['catch_yds_per_att'] = pd.to_numeric(player_fantsey_legacy_df.catch_yds_per_att, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['twopoint_made'] = pd.to_numeric(player_fantsey_legacy_df.twopoint_made, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['rush_yds_per_att'] = pd.to_numeric(player_fantsey_legacy_df.rush_yds_per_att, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['vbd_points'] = pd.to_numeric(player_fantsey_legacy_df.vbd_points, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['pass_target'] = pd.to_numeric(player_fantsey_legacy_df.pass_target, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['fumbles_total'] = pd.to_numeric(player_fantsey_legacy_df.fumbles_total, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['fantsey_points'] = pd.to_numeric(player_fantsey_legacy_df.fantsey_points, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-
-player_fantsey_legacy_df['games_played'] = pd.to_numeric(player_fantsey_legacy_df.games_played, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['games_started'] = pd.to_numeric(player_fantsey_legacy_df.games_started, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['pass_completed'] = pd.to_numeric(player_fantsey_legacy_df.pass_completed, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['pass_attempt'] = pd.to_numeric(player_fantsey_legacy_df.pass_attempt, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['pass_yds'] = pd.to_numeric(player_fantsey_legacy_df.pass_yds, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['pass_td'] = pd.to_numeric(player_fantsey_legacy_df.pass_td, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['rush_td'] = pd.to_numeric(player_fantsey_legacy_df.rush_td, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['pass_int'] = pd.to_numeric(player_fantsey_legacy_df.pass_int, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-
-player_fantsey_legacy_df['rush_att'] = pd.to_numeric(player_fantsey_legacy_df.rush_att, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['rush_yds'] = pd.to_numeric(player_fantsey_legacy_df.rush_yds, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['catches'] = pd.to_numeric(player_fantsey_legacy_df.catches, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['catch_yds'] = pd.to_numeric(player_fantsey_legacy_df.catch_yds, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['catch_td'] = pd.to_numeric(player_fantsey_legacy_df.catch_td, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['fumbles_lost'] = pd.to_numeric(player_fantsey_legacy_df.fumbels_lost, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['td_total'] = pd.to_numeric(player_fantsey_legacy_df.td_total, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['ppr_points'] = pd.to_numeric(player_fantsey_legacy_df.ppr_points, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-
-player_fantsey_legacy_df['draftking_points'] = pd.to_numeric(player_fantsey_legacy_df.draftking_points, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['fanduel_points'] = pd.to_numeric(player_fantsey_legacy_df.fanduel_points, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['rank_position'] = pd.to_numeric(player_fantsey_legacy_df.td_total, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['rank_total'] = pd.to_numeric(player_fantsey_legacy_df.rank_total, errors='coerce', downcast = 'integer').replace(np.nan, 0)
-player_fantsey_legacy_df['age'] = pd.to_numeric(player_fantsey_legacy_df.age, errors='coerce', downcast = 'integer').replace(np.nan, 0)

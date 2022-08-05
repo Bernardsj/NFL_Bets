@@ -12,7 +12,6 @@ def game_scrapper(team_codes, years):
             try:
                 # Pull up team/year web pages
                 url = f"https://www.pro-football-reference.com/teams/{team}/{yr}/gamelog/"
-                url = f"https://www.pro-football-reference.com/teams/buf/2000/gamelog/"
                 html = urlopen(url)
                 soup = BeautifulSoup(html, features="lxml")
                 tables = soup.find_all('table')  # create list of tables
@@ -36,8 +35,8 @@ def game_scrapper(team_codes, years):
                 game_log.columns = game_log_headers
 
                 # define team and year
-                game_log['site_code'] = 'buf'#rmteam
-                game_log['year'] = 2000#rm yr
+                game_log['site_code'] = team
+                game_log['year'] = yr
 
                 # set OT Coding
                 game_log['overtime'] = np.where(game_log.overtime == 'OT', 1, 0)
@@ -54,8 +53,8 @@ def game_scrapper(team_codes, years):
                 game_log.drop(['boxscore'], axis = 1, inplace = True)
 
                 # Convert date - need to figure out
-                f#rom dateutil.parser import parse
-                #game_log.['date'] = pd.to_datetime(parse(game_log.date + ", " + game_log.year.astype(str)))
+                from dateutil.parser import parse
+                game_log['date'] = game_log['date'].apply(lambda x: x + ", " + str(yr)).apply(lambda x: pd.to_datetime(x))
                 
             except ValueError:
                 print(f"Error scraping {team}: {yr}")
