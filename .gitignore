@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Quarto docs
+.js
+.css
+.woff
+.png
