@@ -1,6 +1,7 @@
 # To Do:
 # 1. Add ability to import next seasons data to MySQL Database following end of season
 # 2. Set up automatic run at end of season
+# 3. Update col function at bottom
 
 # Script is designed to scrape player level data following each season.
 # * Based on https://github.com/pvicks585/NFL-WebScrape/blob/main/Webscraping%20NFL%20Player%20Data.ipynb
@@ -14,8 +15,7 @@ import pandas as pd
 import numpy as np
 
 
-def player_legacy(start_year, end_year):
-    years = np.array(range(start_year, end_year))
+def player_legacy(years):
 
     for yr in years:
         # set up soup
@@ -25,17 +25,17 @@ def player_legacy(start_year, end_year):
         soup = BeautifulSoup(html, features='html.parser')
 
         # define headers
-        headers = ['Player', 'Team', 'FantasyPos',
-                   'Age', 'Games_Played', 'Games_Started',
-                   'Pass_Completed', 'Pass_Attempt', 'Pass_Yds',
-                   'Pass_TD', 'Pass_Int', 'Rush_Att', 'Rush_Yds',
-                   'Rush_Yds_Per_Att', 'Rush_TD', 'Pass_Target',
-                   'Catch', 'Catch_Yds', 'Catch_Yds_Per_Att',
-                   'Catch_TD', 'Fumbles_Total', 'Fumbels_Lost',
-                   'TD_Total', 'TwoPoint_Made', 'TwoPoint_Pass',
-                   'Fantsey_Points', 'PPR_Points', 'DraftKing_Points',
-                   'FanDuel_Points', 'VBD_Points', 'Rank_Position',
-                   'Rank_Total']
+        headers = ['player', 'team_code', 'fantasy_position',
+                   'age', 'games_played', 'games_started',
+                   'pass_completed', 'pass_attempt', 'pass_yds',
+                   'pass_td', 'pass_int', 'rush_att', 'rush_yds',
+                   'rush_yds_per_att', 'rush_td', 'pass_target',
+                   'catches', 'catch_yds', 'catch_yds_per_att',
+                   'catch_td', 'fumbles_total', 'fumbles_lost',
+                   'td_total', 'twopoint_made', 'twopoint_pass',
+                   'fantsey_points', 'ppr_points', 'draftking_points',
+                   'fanduel_points', 'vbd_points', 'rank_position',
+                   'rank_total']
 
         # extract data
         # Here we grab all rows that are not classed as table header rows - football reference throws in a table header row everyy 30 rows
@@ -47,14 +47,30 @@ def player_legacy(start_year, end_year):
 
         # create df and remove season award characters (* or +)
         player_stats_annual_yr = pd.DataFrame(player_stats, columns=headers)
-        player_stats_annual_yr['Player'] = player_stats_annual_yr.Player.str.replace(
+        player_stats_annual_yr['player'] = player_stats_annual_yr.player.str.replace(
             '+', "", regex=False).str.replace('*', "", regex=False)
-        player_stats_annual_yr['Year'] = yr
+        player_stats_annual_yr['year'] = yr
+
+        # Update cols to push to mysqldb
+        update_cols = ['age', 'games_played', 'games_started',
+               'pass_completed', 'pass_attempt', 'pass_yds',
+               'pass_td', 'pass_int', 'rush_att', 'rush_yds',
+               'rush_yds_per_att', 'rush_td', 'pass_target',
+               'catches', 'catch_yds', 'catch_yds_per_att',
+               'catch_td', 'fumbles_total', 'fumbles_lost',
+               'td_total', 'twopoint_made', 'twopoint_pass',
+               'fantsey_points', 'ppr_points', 'draftking_points',
+               'fanduel_points', 'vbd_points', 'rank_position',
+                   'rank_total']
+
+        player_stats_annual_yr[update_cols] = player_stats_annual_yr[update_cols].apply(lambda x: pd.to_numeric(x, errors='coerce', downcast = 'integer').replace(np.nan, 0))
 
         # combine dfs
-        if yr == start_year:
+        if yr == years[0]:
             player_stats_annual = player_stats_annual_yr
         else:
             player_stats_annual = pd.concat(
                 [player_stats_annual, player_stats_annual_yr], axis=0, join='outer')
+
     return player_stats_annual 
+
