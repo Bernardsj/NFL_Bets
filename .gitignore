@@ -133,3 +133,11 @@ dmypy.json
 .css
 .woff
 .png
+
+# renv
+library/
+local/
+cellar/
+lock/
+python/
+staging/

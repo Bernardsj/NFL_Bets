@@ -1,0 +1,14 @@
+---
+title: "Fantsey Rank KNN"
+format: html
+---
+
+```{r}
+
+```
+
+```{r setup}
+library(nflverse)
+library(tidyverse)
+library(tidymodels)
+```
