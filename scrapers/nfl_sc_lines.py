@@ -12,4 +12,4 @@ from sqlalchemy import create_engine
 engine = create_engine("mysql://root:eK5ERE<Sqv+j[0o@localhost/nfl_bets")
 
 # Push scraped data
-df_sc_lines(con = engine, name = 'sc_lines', if_exists='append',index=False)
+df_sc_lines.to_sql(con = engine, name = 'sc_lines', if_exists='append',index=False)
